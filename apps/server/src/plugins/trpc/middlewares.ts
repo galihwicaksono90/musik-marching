@@ -1,11 +1,5 @@
-import { initTRPC, TRPCError } from "@trpc/server"
-import type { Context } from "./context"
-
-const t = initTRPC.context<Context>().create()
-
-export const router = t.router
-export const publicProcedure = t.procedure
-export const middleware = t.middleware
+import { publicProcedure } from "../trpc"
+import { TRPCError } from "@trpc/server"
 
 export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
   const { req } = ctx

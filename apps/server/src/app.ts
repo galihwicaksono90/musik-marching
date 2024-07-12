@@ -1,23 +1,23 @@
+import "./utils/loadEnv"
 import fastify from "fastify"
 import { inferRouterInputs, inferRouterOutputs } from "@trpc/server"
 import { registerTrpc, appRouter } from "./plugins/trpc"
 import { registerCors } from "./plugins/cors"
-// import { registerSecureSession } from "./plugins/secureSession"
-// import { registerGoogleOAuth2 } from "./plugins/passport"
-// import { googleOAuth2Routes } from "./routers/oauth"
-// import { appRouter } from "./plugins/trpc/router"
+import { registerSecureSession } from "./plugins/secureSession"
+import { registerGoogleOAuth2 } from "./plugins/passport"
+import { googleOAuth2Routes } from "./routers/oauth"
 
 async function createServer() {
   const app = await fastify()
 
   registerCors(app)
-  // registerSecureSession(app)
-  // registerGoogleOAuth2(app)
+  registerSecureSession(app)
+  registerGoogleOAuth2(app)
   registerTrpc(app)
 
-  // app.register(googleOAuth2Routes, {
-  //   prefix: "/oauth2"
-  // })
+  app.register(googleOAuth2Routes, {
+    prefix: "/oauth2"
+  })
 
   return app
 }
@@ -33,9 +33,8 @@ async function createServer() {
     console.error(e)
     process.exit(1)
   }
-
 })()
 
 export type AppRouter = typeof appRouter
-// export type RouterInputs = inferRouterInputs<AppRouter>
-// export type RouterOutputs = inferRouterOutputs<AppRouter>
+export type RouterInputs = inferRouterInputs<AppRouter>
+export type RouterOutputs = inferRouterOutputs<AppRouter>
