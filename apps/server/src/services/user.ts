@@ -30,3 +30,19 @@ export async function upsertUser({ email, name }: UserCreateInput) {
 
   return user
 }
+
+export async function findById({ id }: { id: string }) {
+  const user = await prisma.user.findFirst({
+    where: {
+      id,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true
+    }
+  })
+  return user
+}
+

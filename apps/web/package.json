@@ -17,7 +17,8 @@
     "@trpc/server": "^11.0.0-rc.456",
     "next": "15.0.0-rc.0",
     "react": "19.0.0-rc-f994737d14-20240522",
-    "react-dom": "19.0.0-rc-f994737d14-20240522"
+    "react-dom": "19.0.0-rc-f994737d14-20240522",
+    "react-hook-form": "^7.52.1"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",

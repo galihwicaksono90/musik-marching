@@ -6,10 +6,4 @@ export const userRouter = router({
     const users = await prisma.user.findMany()
     return users
   }),
-  embuh: publicProcedure.query(async () => {
-    return {
-      hello: "world",
-      mantap: "djaya"
-    }
-  })
 })
