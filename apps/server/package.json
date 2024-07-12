@@ -1,0 +1,29 @@
+{
+  "name": "@repo/server",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx ./index.ts",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@fastify/cors": "^9.0.1",
+    "@trpc/server": "^11.0.0-rc.456",
+    "fastify": "^4.28.1"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "tsx": "^4.16.2",
+    "typescript": "^5"
+  },
+  "exports": {
+    ".": "./index.ts"
+  }
+}
