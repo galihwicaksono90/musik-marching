@@ -1,5 +1,4 @@
-import prisma from "../prisma"
-import { Prisma } from "@prisma/client"
+import { prisma, type Prisma } from "@repo/db"
 
 export function getUserUploadedScores(userId: string) {
   return prisma.score.findMany({

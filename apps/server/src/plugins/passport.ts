@@ -1,8 +1,7 @@
 import fastifyPassport from "@fastify/passport"
 import { FastifyInstance } from "fastify";
 import { Strategy as GoogleOAuth2, type StrategyOptions } from "passport-google-oauth20"
-import { User } from "@prisma/client"
-import prisma from "../prisma";
+import { prisma, type User } from "@repo/db"
 import { upsertUser } from "../services/user"
 
 declare module 'fastify' {

@@ -1,5 +1,5 @@
 import { router, publicProcedure } from "../plugins/trpc"
-import prisma from "../prisma"
+import { prisma } from "@repo/db"
 
 export const userRouter = router({
   all: publicProcedure.query(async () => {

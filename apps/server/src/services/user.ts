@@ -1,4 +1,4 @@
-import prisma from "../prisma"
+import { prisma } from "@repo/db"
 import { z } from "zod"
 
 const userCreateInput = z.object({
