@@ -1,11 +1,11 @@
 import fastifyPassport from "@fastify/passport"
 import { FastifyInstance } from "fastify";
 import { Strategy as GoogleOAuth2, type StrategyOptions } from "passport-google-oauth20"
-import { prisma, type User } from "@repo/db"
+import { db, type User } from "@repo/db"
 import { upsertUser } from "../services/user"
 
 declare module 'fastify' {
-  interface PassportUser extends User { }
+  interface PassportUser extends Awaited<ReturnType<typeof upsertUser>> { }
 }
 
 const googleOAuth2Options: StrategyOptions = {
@@ -17,7 +17,7 @@ const googleOAuth2Options: StrategyOptions = {
 fastifyPassport.use('googleOAuth2', new GoogleOAuth2(googleOAuth2Options, async function (accessToken, refreshToken, profile, done) {
   const user = await upsertUser({
     name: profile.displayName,
-    email: profile.emails![0]!.value
+    email: profile.emails![0]!.value,
   })
 
   return done(null, user)
@@ -28,13 +28,15 @@ fastifyPassport.registerUserSerializer(async (user) => {
 })
 
 fastifyPassport.registerUserDeserializer(async (input: User) => {
-  const authUser = prisma.user.findFirstOrThrow({
+  const authUser = db.user.findFirstOrThrow({
     where: {
       email: input.email as string
     },
     select: {
       id: true,
-      role: true
+      role: true,
+      email: true,
+      name: true,
     }
   })
 

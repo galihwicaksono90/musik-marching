@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres:password@localhost:5432/musik-marching?schema=public"
+}
+
+enum ScoreTypeEnum {
+  REGULAR
+  EXCLUSIVE
+}
+
+model ScoreType {
+  id    String        @id @default(cuid())
+  name  ScoreTypeEnum @unique
+  Score Score[]
+}
+
+enum RoleNameEnum {
+  USER
+  CONTRIBUTOR
+  ADMIN
+}
+
+model Role {
+  id    String       @id @default(cuid())
+  name  RoleNameEnum @unique
+  users User[]
+}
+
+model User {
+  id                        String    @id @default(cuid())
+  name                      String
+  email                     String    @unique
+  role                      Role      @relation(fields: [roleId], references: [id])
+  roleId                    String
+  password                  String?
+  createdAt                 DateTime  @default(now())
+  verifiedAsContributorAt   DateTime?
+  verifiedAsContributorBy   User?     @relation("verifiedAsContributorBy", fields: [verifiedAsContributorById], references: [id])
+  verifiedAsContributorById String?
+  updatedAt                 DateTime?
+  deletedAt                 DateTime?
+  verifiedsScores           Score[]   @relation("adminVerifiedScores")
+  contributorsVerified      User[]    @relation("verifiedAsContributorBy")
+  Score                     Score[]
+}
+
+model Score {
+  id           String    @id @default(cuid())
+  title        String
+  author       String
+  uploadedAt   DateTime  @default(now())
+  uploadedBy   User      @relation(fields: [uploadedById], references: [id])
+  uploadedById String
+  updatedAt    DateTime?
+  deletedAt    DateTime?
+  type         ScoreType @relation(fields: [scoreTypeId], references: [id])
+  scoreTypeId  String
+
+  verifiedBy   User?     @relation("adminVerifiedScores", fields: [verifiedById], references: [id])
+  verifiedById String?
+  verifiedAt   DateTime?
+}

@@ -1,5 +1,19 @@
 import { z } from "zod"
+import { RoleNameEnum } from "@repo/db"
 
-export const UserTypeEnum = z.enum(["USER", "CONTRIBUTOR", "ADMIN"])
+export const roleNames = [
+  RoleNameEnum.USER,
+  RoleNameEnum.ADMIN,
+  RoleNameEnum.CONTRIBUTOR
+] as const
 
-export type UserTypeEnum = z.infer<typeof UserTypeEnum>
+export const userCreateInput = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+})
+
+export const verifyAsContributorInput = z.object({
+  id: z.string()
+})
+
+export type UserCreateInput = z.infer<typeof userCreateInput>

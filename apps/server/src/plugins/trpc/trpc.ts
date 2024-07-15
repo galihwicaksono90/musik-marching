@@ -1,6 +1,6 @@
 import { initTRPC, TRPCError } from "@trpc/server"
 import type { Context } from "./context"
-import { UserTypeEnum } from "../../schemas/user"
+import { RoleNameEnum } from "@repo/db"
 
 const t = initTRPC.context<Context>().create()
 
@@ -24,9 +24,9 @@ export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
   })
 })
 
-export const contributorProcedure = publicProcedure.use(async ({ ctx, next }) => {
+export const contributorProcedure = protectedProcedure.use(async ({ ctx, next }) => {
   const { user } = ctx
-  if (user?.role !== UserTypeEnum.enum.CONTRIBUTOR) {
+  if (user.role.name !== RoleNameEnum.CONTRIBUTOR) {
     throw new TRPCError({ code: "UNAUTHORIZED" })
   }
 
@@ -37,9 +37,9 @@ export const contributorProcedure = publicProcedure.use(async ({ ctx, next }) =>
   })
 })
 
-export const adminProcedure = publicProcedure.use(async ({ ctx, next }) => {
+export const adminProcedure = protectedProcedure.use(async ({ ctx, next }) => {
   const { user } = ctx
-  if (user?.role !== UserTypeEnum.enum.ADMIN) {
+  if (user.role.name !== RoleNameEnum.ADMIN) {
     throw new TRPCError({ code: "UNAUTHORIZED" })
   }
 

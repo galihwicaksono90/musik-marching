@@ -20,11 +20,13 @@ type Inputs = RouterInputs["score"]["create"]
 export function CreateScoreForm() {
   const createScore = trpc.score.create.useMutation()
   const { register, handleSubmit, control } = useForm<Inputs>()
+  const utils = trpc.useUtils()
 
   const onSubmit = async (inputs: Inputs) => {
     console.log({ inputs })
     const res = await createScore.mutateAsync(inputs)
     console.log({ res })
+    await utils.score.getScores.invalidate()
   }
 
   return (

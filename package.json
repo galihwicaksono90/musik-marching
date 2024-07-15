@@ -6,7 +6,9 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "ui:add": "yarn workspace @repo/ui ui:add"
+    "ui:add": "yarn workspace @repo/ui ui:add",
+    "web:dev": "yarn workspace @repo/web dev",
+    "server:dev": "yarn workspace @repo/server dev"
   },
   "devDependencies": {
     "prettier": "^3.2.5",
