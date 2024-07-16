@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "seed": "tsx ./index.ts"
+    "seed": "tsx ./seed.ts"
   },
   "exports": {
     ".": "./index.ts"
@@ -13,6 +13,7 @@
     "tsx": "^4.16.2"
   },
   "dependencies": {
-    "@prisma/client": "5.16.2"
+    "@prisma/client": "5.16.2",
+    "prisma-extension-pagination": "^0.7.4"
   }
 }

@@ -1,5 +1,6 @@
 import { db, ScoreTypeEnum, type Prisma } from "@repo/db"
-import { createConnection } from "net"
+import { PaginationOptions } from "../schemas/pagination"
+import { z } from "zod"
 
 export function getScores() {
   return db.score.findMany({
@@ -18,30 +19,58 @@ export function getScores() {
   })
 }
 
-export function getVerifiedScores() {
-  return db.score.findMany({
+
+export async function getVerifiedScores({ paginationOptions }: { paginationOptions: PaginationOptions<"Score"> }) {
+  console.log({ paginationOptions })
+  const [pagination, meta] = await db.score.paginate({
     where: {
+      ...paginationOptions.where,
       verifiedAt: {
         not: null
-      },
-      title: {
-        contains: ""
       }
-    },
-    orderBy: {
-      uploadedAt: "desc"
     },
     include: {
       uploadedBy: {
         select: {
           id: true,
           name: true,
+          email: true
         }
-      },
-      type: true
-    },
+      }
+    }
+  }).withPages({
+    limit: paginationOptions.limit ?? null,
+    includePageCount: paginationOptions.includePageCount,
+    page: paginationOptions.page
   })
+  return { pagination, meta }
 }
+
+// export async function getVerifiedScores({ options }: { options?: PaginationOptions<"Score"> }) {
+//   return await db.score.findMany({
+//     take: options?.take,
+//     skip: options?.skip,
+//     where: {
+//       ...options?.where,
+//       verifiedAt: {
+//         not: null
+//       },
+//     },
+//     orderBy: {
+//       ...options?.orderBy
+//     },
+//     // cursor: options?.cursor,
+//     include: {
+//       uploadedBy: {
+//         select: {
+//           id: true,
+//           name: true,
+//         }
+//       },
+//       type: true
+//     },
+//   })
+// }
 
 export function getUserUploadedScores(userId: string) {
   return db.score.findMany({

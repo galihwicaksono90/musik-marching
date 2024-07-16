@@ -23,10 +23,9 @@ export function CreateScoreForm() {
   const utils = trpc.useUtils()
 
   const onSubmit = async (inputs: Inputs) => {
-    console.log({ inputs })
-    const res = await createScore.mutateAsync(inputs)
-    console.log({ res })
-    await utils.score.getScores.invalidate()
+    await createScore.mutateAsync(inputs)
+    utils.score.getVerifiedScores.invalidate()
+    utils.score.getAllScores.invalidate()
   }
 
   return (
@@ -52,28 +51,7 @@ export function CreateScoreForm() {
           </Select>
         )}
       />
-
       <Button type="submit">Submit</Button>
     </form>
-  )
-}
-
-export function SelectDemo() {
-  return (
-    <Select>
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Select a fruit" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          <SelectLabel>Fruits</SelectLabel>
-          <SelectItem value="apple">Apple</SelectItem>
-          <SelectItem value="banana">Banana</SelectItem>
-          <SelectItem value="blueberry">Blueberry</SelectItem>
-          <SelectItem value="grapes">Grapes</SelectItem>
-          <SelectItem value="pineapple">Pineapple</SelectItem>
-        </SelectGroup>
-      </SelectContent>
-    </Select>
   )
 }

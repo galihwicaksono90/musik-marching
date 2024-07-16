@@ -3,11 +3,13 @@ import { router } from "./trpc"
 import { userRouter } from "../../routers/user"
 import { authRouter } from "../../routers/auth"
 import { scoreRouter } from "../../routers/score"
+import { purchaseRouter } from "../../routers/purchase"
 
 export const appRouter = router({
   user: userRouter,
   auth: authRouter,
-  score: scoreRouter
+  score: scoreRouter,
+  purchase: purchaseRouter
 })
 
 export type AppRouter = typeof appRouter

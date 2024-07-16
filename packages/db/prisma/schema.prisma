@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://postgres:password@localhost:5432/musik-marching?schema=public"
+  url      = "postgresql://tony:password@localhost:5432/musik-marching?schema=public"
 }
 
 enum ScoreTypeEnum {
@@ -19,9 +19,12 @@ enum ScoreTypeEnum {
 }
 
 model ScoreType {
-  id    String        @id @default(cuid())
-  name  ScoreTypeEnum @unique
-  Score Score[]
+  id        String        @id @default(cuid())
+  name      ScoreTypeEnum @unique
+  Score     Score[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime?
+  deletedAt DateTime?
 }
 
 enum RoleNameEnum {
@@ -31,27 +34,32 @@ enum RoleNameEnum {
 }
 
 model Role {
-  id    String       @id @default(cuid())
-  name  RoleNameEnum @unique
-  users User[]
+  id        String       @id @default(cuid())
+  name      RoleNameEnum @unique
+  users     User[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime?
+  deletedAt DateTime?
 }
 
 model User {
-  id                        String    @id @default(cuid())
+  id                        String     @id @default(cuid())
   name                      String
-  email                     String    @unique
-  role                      Role      @relation(fields: [roleId], references: [id])
+  email                     String     @unique
+  role                      Role       @relation(fields: [roleId], references: [id])
   roleId                    String
   password                  String?
-  createdAt                 DateTime  @default(now())
+  createdAt                 DateTime   @default(now())
   verifiedAsContributorAt   DateTime?
-  verifiedAsContributorBy   User?     @relation("verifiedAsContributorBy", fields: [verifiedAsContributorById], references: [id])
+  verifiedAsContributorBy   User?      @relation("verifiedAsContributorBy", fields: [verifiedAsContributorById], references: [id])
   verifiedAsContributorById String?
   updatedAt                 DateTime?
   deletedAt                 DateTime?
-  verifiedsScores           Score[]   @relation("adminVerifiedScores")
-  contributorsVerified      User[]    @relation("verifiedAsContributorBy")
-  Score                     Score[]
+  verifiedsScores           Score[]    @relation("adminVerifiedScores")
+  contributorsVerified      User[]     @relation("verifiedAsContributorBy")
+  score                     Score[]
+  purchases                 Purchase[] @relation("purchasedBy")
+  verifiedPurchases         Purchase[] @relation("purchaseVerifiedBy")
 }
 
 model Score {
@@ -65,8 +73,28 @@ model Score {
   deletedAt    DateTime?
   type         ScoreType @relation(fields: [scoreTypeId], references: [id])
   scoreTypeId  String
+  price        Float
+
+  purchases Purchase[] @relation("scorePurchases")
 
   verifiedBy   User?     @relation("adminVerifiedScores", fields: [verifiedById], references: [id])
   verifiedById String?
   verifiedAt   DateTime?
+}
+
+model Purchase {
+  id            String   @id @default(cuid())
+  price         Float
+  purchasedAt   DateTime @default(now())
+  purchasedBy   User     @relation("purchasedBy", fields: [purchasedById], references: [id])
+  purchasedById String
+
+  score   Score  @relation("scorePurchases", fields: [scoreId], references: [id])
+  scoreId String
+
+  verifiedAt   DateTime?
+  verifiedBy   User?     @relation("purchaseVerifiedBy", fields: [verifiedById], references: [id])
+  verifiedById String?
+  updatedAt    DateTime?
+  deletedAt    DateTime?
 }

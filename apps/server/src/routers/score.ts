@@ -11,8 +11,28 @@ export const scoreRouter = router({
       return scores
     }),
   getVerifiedScores: publicProcedure
-    .query(async () => {
-      const scores = await scoreService.getVerifiedScores()
+    .input(scoreSchema.scorePaginationOptions)
+    .query(async ({ input }) => {
+      const scores = await scoreService.getVerifiedScores({
+        paginationOptions: {
+          ...input,
+          limit: input.limit,
+          where: {
+            title: {
+              contains: input.title,
+              mode: "insensitive"
+            },
+            type: {
+              is: {
+                name: input.type
+              }
+            }
+          },
+          orderBy: {
+            uploadedAt: input.orderBy
+          },
+        }
+      })
       return scores
     }),
   userUploads: contributorProcedure
@@ -33,12 +53,10 @@ export const scoreRouter = router({
 
       return newScore
     }),
-
   getScoreTypes: publicProcedure.query(async () => {
     const scoreTypes = await db.scoreType.findMany()
     return scoreTypes
   }),
-
   verifyScore: adminProcedure
     .input(scoreSchema.verifyScoreInput)
     .mutation(async ({ input, ctx }) => {

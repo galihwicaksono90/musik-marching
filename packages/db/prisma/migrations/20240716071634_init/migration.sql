@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE "Role" ALTER COLUMN "deletedAt" DROP NOT NULL,
+ALTER COLUMN "updatedAt" DROP NOT NULL;
+
+-- AlterTable
+ALTER TABLE "ScoreType" ALTER COLUMN "deletedAt" DROP NOT NULL,
+ALTER COLUMN "updatedAt" DROP NOT NULL;

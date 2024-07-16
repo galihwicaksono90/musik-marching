@@ -39,6 +39,7 @@ export const contributorProcedure = protectedProcedure.use(async ({ ctx, next })
 
 export const adminProcedure = protectedProcedure.use(async ({ ctx, next }) => {
   const { user } = ctx
+  console.log({ RoleNameEnum })
   if (user.role.name !== RoleNameEnum.ADMIN) {
     throw new TRPCError({ code: "UNAUTHORIZED" })
   }

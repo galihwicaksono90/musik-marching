@@ -1,9 +1,8 @@
-import { PrismaClient } from "@prisma/client"
+import { $Enums, PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
 async function main() {
-
   const roles = await prisma.role.createManyAndReturn({
     data: [
       {
@@ -61,22 +60,17 @@ async function main() {
     }
   })
 
-  const regularScore = await prisma.score.create({
+  const user = await prisma.user.create({
     data: {
-      type: {
+      name: "User",
+      email: "galih.wicaksono@softwareseni.com",
+      role: {
         connect: {
-          id: scoreTypes.find(type => type.name === "REGULAR")?.id
+          id: roles.find(role => role.name === "CONTRIBUTOR")?.id
         }
       },
-      title: "RegularScore",
-      author: "Author 1",
-      uploadedBy: {
-        connect: {
-          id: contributor.id
-        }
-      },
-      verifiedAt: new Date(),
-      verifiedBy: {
+      verifiedAsContributorAt: new Date(),
+      verifiedAsContributorBy: {
         connect: {
           id: admin.id
         }
@@ -84,29 +78,65 @@ async function main() {
     }
   })
 
-  const exclusiveScore = await prisma.score.create({
-    data: {
-      type: {
-        connect: {
-          id: scoreTypes.find(type => type.name === "EXCLUSIVE")?.id
-        }
-      },
-      title: "Exclusive Score",
+  const scores = [
+    {
+      title: "Score one",
       author: "Author 1",
-      uploadedBy: {
-        connect: {
-          id: contributor.id
-        }
-      },
-      verifiedAt: new Date(),
-      verifiedBy: {
-        connect: {
-          id: admin.id
+      price: 1000,
+    },
+    {
+      title: "Score two",
+      author: "Author 2",
+      price: 2000,
+    },
+    {
+      title: "Score three",
+      author: "Author 3",
+      price: 3000,
+    },
+    {
+      title: "Score four",
+      author: "Author 4",
+      price: 4000,
+    },
+    {
+      title: "Score five",
+      author: "Author 5",
+      price: 5000,
+    },
+    {
+      title: "Score six",
+      author: "Author 6",
+      price: 6000,
+    },
+  ]
+
+  scores.forEach(async (score, index) => {
+    const scoreType = index % 2 === 0 ? "REGULAR" : "EXCLUSIVE"
+    await prisma.score.create({
+      data: {
+        type: {
+          connect: {
+            id: scoreTypes.find(type => type.name === scoreType)?.id
+          }
+        },
+        price: score.price,
+        title: score.title,
+        author: score.author,
+        uploadedBy: {
+          connect: {
+            id: contributor.id
+          }
+        },
+        verifiedAt: new Date(),
+        verifiedBy: {
+          connect: {
+            id: admin.id
+          }
         }
       }
-    }
+    })
   })
-  console.log({ roles })
 }
 
 main()
